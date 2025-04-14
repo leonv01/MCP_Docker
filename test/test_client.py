@@ -5,11 +5,12 @@ async def main():
     # Connect to your running FastMCP server
     async with Client("http://localhost:3000/sse") as client:
         # Call the "tool/add" tool
-        result = await client.call_tool("add", {"a": 69, "b": 5})
-        print(result)
+        result = await client.call_tool("add", {"a": 50, "b": 5})
+        assert '55' == result[0].text
+        
 
         to_upper_result = await client.call_tool("to_upper", {"text": "hello"})
-        print(to_upper_result)
+        assert 'HELLO' == to_upper_result[0].text
 
         example_text = """
         This is a test text.
@@ -19,13 +20,13 @@ async def main():
 
         # Call the "tool/message_length" tool
         length = await client.call_tool("message_length", {"message": example_text})
-        print(f"Length of the message: {length}")
-        
-        print(length)
+        assert '126' == length[0].text
 
         # Call the "tool/execute" tool
-        execute_result = await client.call_tool("execute", {"command": "ls ."})
-        print(execute_result)
+        parse_result = await client.call_tool("parse", {"message": example_text})
+        assert example_text == parse_result[0].text
+
+        print("All tests passed")
 
 # Run the async function
 if __name__ == "__main__":
