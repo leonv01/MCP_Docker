@@ -39,18 +39,19 @@ async def main():
         print("'parse' test passed")
 
         # Call the "tool/execute_shell" tool        
-        shell_command: str = "echo hello"
+        shell_command_content: str = "hello\n"
+        shell_command: str = f"echo {shell_command_content}"
         print(f"Testing 'execute_shell' MCP tool with following values: text={shell_command}")
-        exec_shell_result: list = await client.call_tool("execute_shell", {"command": {shell_command}})
-        assert shell_command == parse_result[0].text
+        exec_shell_result: list = await client.call_tool("execute_shell", {"command": shell_command})
+        assert shell_command_content == exec_shell_result[0].text
         print("'execute_shell' test passed")
  
         # Call the "tool/execute" tool  
-        command_content: str = "hello";      
+        command_content: str = "hello"
         command: str = f"print(\"{command_content}\")"
         print(f"Testing 'execute' MCP tool with following values: text={command}")
         exec_result = await client.call_tool("execute", {"code": command})
-        assert command_content == exec_result[0].text
+        assert (command_content + '\n') == exec_result[0].text
         print("'execute' test passed")
 
         print("All tests passed")
