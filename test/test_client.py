@@ -26,6 +26,12 @@ async def main():
         parse_result = await client.call_tool("parse", {"message": example_text})
         assert example_text == parse_result[0].text
 
+        exec_shell_result = await client.call_tool("execute_shell", {"command": "ls ."})
+        print(exec_shell_result[0].text)
+ 
+        exec_result = await client.call_tool("execute", {"code": "for i in range(3): print(i)"})
+        print(exec_result[0].text)
+        #assert "hello" == exec_result[0].text
         print("All tests passed")
 
 # Run the async function

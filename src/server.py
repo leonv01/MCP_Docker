@@ -1,3 +1,4 @@
+from asyncio import subprocess
 import uvicorn
 from mcp.server.fastmcp import FastMCP
 
@@ -18,7 +19,23 @@ def to_upper(text: str) -> str:
     return text.upper()
 
 @mcp.tool("execute")
-def execute(command: str) -> str:
+def execute(code: str) -> str:
+    """Execute a shell command"""
+    import io
+    import contextlib
+
+    output = io.StringIO()
+
+    try:
+        with contextlib.redirect_stdout(output):
+            exec(code, {})
+    except Exception as e:
+        return f"Error: {e}"
+
+    return output.getvalue()
+
+@mcp.tool("execute_shell")
+def execute_shell(command: str) -> str:
     """Execute a shell command"""
     import subprocess
     result = subprocess.run(command, shell=True, capture_output=True, text=True)
